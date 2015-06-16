@@ -105,7 +105,9 @@ SUBROUTINE Deletion(this_box,mcstep,randno)
   IF(nmols(is,this_box) == 0) RETURN
   enddo
 
+  do is = 1, nspecies
   ntrials(is,this_box)%deletion = ntrials(is,this_box)%deletion + 1  
+  enddo
   ! Determine the index of im
 
   do is = 1, nspecies
@@ -289,7 +291,7 @@ SUBROUTINE Deletion(this_box,mcstep,randno)
   ELSE
      tpacc = 0.0_DP
   END IF
-  if(is == 1) ntemp = nmols(is,this_box) + 1
+  ntemp = nmols(is,this_box) + 1
   if(is == 1) adden = adden + DLOG(P_reverse(1)+P_reverse(2))
   suben = suben + tpacc + beta(this_box)*E_angle*0.5_DP
   enddo
@@ -297,19 +299,15 @@ SUBROUTINE Deletion(this_box,mcstep,randno)
 
   pacc = beta(this_box)*(-delta_e) - suben - adden - DLOG(ntemp)
 
-  pacc = pacc - DLOG(alpha_ratio) + DLOG(box_list(this_box)%volume)
+  pacc = pacc - DLOG(alpha_ratio)
 
   open(unit=59,file="del_en.dat",action="write")
   write(59,*) "B1", E_inter_vdw, E_inter_qq 
   write(59,*) "B2", E_angle, E_dihedral
   write(59,*) "B3", E_intra_vdw, E_intra_qq
   write(59,*) "B4", E_self_move, E_reciprocal_move
-  write(59,*) "B5", energy(this_box)%ewald_reciprocal, e_lrc, energy(this_box)%lrc
-  write(59,*) "B6", pacc, delta_e, beta(this_box)*delta_e, &
-     dlog(alpha_ratio), dlog(P_reverse(1)), dlog(P_reverse(2))
-
-  write(59,*) "B7", dlog(dbpair), DLOG(species_list(1)%de_broglie(this_box)), &
-     DLOG(species_list(2)%de_broglie(this_box))
+  write(59,*) "B5", pacc, beta(this_box)*delta_e
+  write(59,*) "B6", suben, adden
 
   is = 1
   IF(lchempot) THEN

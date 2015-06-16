@@ -150,6 +150,7 @@ SUBROUTINE Insertion(this_box,mcstep,randno)
      del_Flag = .FALSE.
      get_fragorder = .TRUE.
      ALLOCATE(frag_order(nfragments(is)))
+     P_forward(is) = 1.0_DP
      CALL Build_Molecule(alive(is),is,this_box,frag_order,this_lambda,which_anchor,P_forward(is),nrg_ring_frag_tot(is),cbmc_overlap(is))
      molecule_list(alive(is),is)%live = .TRUE.
      atom_list(:,alive(is),is)%exist = .TRUE.
@@ -431,12 +432,8 @@ SUBROUTINE Insertion(this_box,mcstep,randno)
   write(58,*) "B2", E_angle, E_dihedral
   write(58,*) "B3", E_intra_vdw, E_intra_qq
   write(58,*) "B4", E_self_move, E_reciprocal_move
-  write(58,*) "B5", energy(this_box)%ewald_reciprocal, e_lrc, energy(this_box)%lrc
-  write(58,*) "B6", pacc, delta_e, beta(this_box)*delta_e, &
-     dlog(alpha_ratio), dlog(P_forward(1)), dlog(P_forward(2))
+  write(58,*) "B5", pacc, beta(this_box)*delta_e
 
-  write(58,*) "B7", dlog(dbpair), DLOG(species_list(1)%de_broglie(this_box)), &
-     DLOG(species_list(2)%de_broglie(this_box))
   is = 1
   IF(lchempot) THEN
      pacc = pacc - species_list(1)%chem_potential * beta(this_box)
