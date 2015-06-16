@@ -1,15 +1,3 @@
-!********************************************************************************
-!   Cassandra - An open source atomistic Monte Carlo software package
-!   developed at the University of Notre Dame.
-!   http://cassandra.nd.edu
-!   Prof. Edward Maginn <ed@nd.edu>
-!   Copyright (2013) University of Notre Dame du Lac
-!
-!   This program is free software: you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation, either version 3 of the License, or
-!   (at your option) any later version.
-!
 !   This program is distributed in the hope that it will be useful,
 !   but WITHOUT ANY WARRANTY; without even the implied warranty of
 !   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -310,6 +298,18 @@ SUBROUTINE Deletion(this_box,mcstep,randno)
   pacc = beta(this_box)*(-delta_e) - suben - adden - DLOG(ntemp)
 
   pacc = pacc - DLOG(alpha_ratio) + DLOG(box_list(this_box)%volume)
+
+  open(unit=59,file="del_en.dat",action="write")
+  write(59,*) "B1", E_inter_vdw, E_inter_qq 
+  write(59,*) "B2", E_angle, E_dihedral
+  write(59,*) "B3", E_intra_vdw, E_intra_qq
+  write(59,*) "B4", E_self_move, E_reciprocal_move
+  write(59,*) "B5", energy(this_box)%ewald_reciprocal, e_lrc, energy(this_box)%lrc
+  write(59,*) "B6", pacc, delta_e, beta(this_box)*delta_e, &
+     dlog(alpha_ratio), dlog(P_reverse(1)), dlog(P_reverse(2))
+
+  write(59,*) "B7", dlog(dbpair), DLOG(species_list(1)%de_broglie(this_box)), &
+     DLOG(species_list(2)%de_broglie(this_box))
 
   is = 1
   IF(lchempot) THEN

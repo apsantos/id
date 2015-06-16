@@ -426,17 +426,17 @@ SUBROUTINE Insertion(this_box,mcstep,randno)
 
   pacc = pacc - DLOG(alpha_ratio) + DLOG(box_list(this_box)%volume)
 
-!  print *, "B1", E_inter_vdw, E_inter_qq 
-!  print *, "B2", E_angle, E_dihedral
-!  print *, "B3", E_intra_vdw, E_intra_qq
-!  print *, "B4", E_self_move, E_reciprocal_move
-!  print *, "B5", energy(this_box)%ewald_reciprocal, e_lrc, energy(this_box)%lrc
-!  write(58,*), pacc, beta(this_box)*delta_e, beta(this_box)*E_angle, &
-!     beta(this_box)*(nrg_ring_frag_tot(1)+nrg_ring_frag_tot(2)), &
-!     dlog(alpha_ratio), dlog(P_forward(1)+P_forward(2))
+  open(unit=58,file="ins_en.dat",action="write")
+  write(58,*) "B1", E_inter_vdw, E_inter_qq 
+  write(58,*) "B2", E_angle, E_dihedral
+  write(58,*) "B3", E_intra_vdw, E_intra_qq
+  write(58,*) "B4", E_self_move, E_reciprocal_move
+  write(58,*) "B5", energy(this_box)%ewald_reciprocal, e_lrc, energy(this_box)%lrc
+  write(58,*) "B6", pacc, delta_e, beta(this_box)*delta_e, &
+     dlog(alpha_ratio), dlog(P_forward(1)), dlog(P_forward(2))
 
-!  write(58,*), dlog(dbpair), DLOG(species_list(1)%de_broglie(this_box)), &
-!     DLOG(species_list(2)%de_broglie(this_box))
+  write(58,*) "B7", dlog(dbpair), DLOG(species_list(1)%de_broglie(this_box)), &
+     DLOG(species_list(2)%de_broglie(this_box))
   is = 1
   IF(lchempot) THEN
      pacc = pacc - species_list(1)%chem_potential * beta(this_box)
